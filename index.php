@@ -12,6 +12,12 @@ if (!isset($_GET['file'])) {
 
 $file = $_GET['file'];
 
+// if file name start with latest
+if (strpos(mb_strtolower($file), 'latest') !== false) {
+    echo getLatestReleaseFile($file);
+    die();
+}
+
 // 106.0.5249.61/chromedriver_win32.zip
 $fileName = str_replace(['.', '/'], ['_', '-'], $file);
 

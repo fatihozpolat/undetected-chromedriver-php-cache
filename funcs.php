@@ -16,3 +16,20 @@ function getXmlFile($file): string
         }
     }
 }
+
+function getLatestReleaseFile($file): string
+{
+    if (!file_exists($file)) {
+        $fileRes = file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
+        file_put_contents($file, $fileRes);
+        return $fileRes;
+    } else {
+        if (time() - filemtime($file) > 60 * 60) {
+            $fileRes = file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
+            file_put_contents($file, $fileRes);
+            return $fileRes;
+        } else {
+            return file_get_contents($file);
+        }
+    }
+}
