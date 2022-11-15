@@ -21,5 +21,4 @@ if (strpos(mb_strtolower($file), 'latest') !== false) {
     die();
 }
 
-header('Content-Type: application/zip');
 echo getZip($file);

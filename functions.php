@@ -29,24 +29,25 @@ function getLatestReleaseFile($file): string
 function getZip($file): string
 {
     $fileName = str_replace(['.', '/'], ['_', '-'], $file);
-    return getFile($fileName);
+    return getFile($fileName, $file);
 }
 
-function getFile($fileName)
+function getFile($fileName, $orjFileName = null)
 {
+    $orjFileName = $orjFileName ?? $fileName;
     $filePath = __DIR__ . '/files/' . $fileName;
 
     if (!file_exists($filePath)) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $fileName);
+        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
-        return $res;
     }
 
     if (time() - filemtime($filePath) > ONE_HOUR) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $fileName);
+        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
-        return $res;
     }
 
+    if (str_contains($fileName, 'zip'))
+        header('Content-Type: application/zip');
     return file_get_contents($filePath);
 }
