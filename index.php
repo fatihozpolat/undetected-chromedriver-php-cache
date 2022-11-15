@@ -1,8 +1,9 @@
 <?php
-require_once "funcs.php";
+if (!file_exists('files')) {
+    mkdir('files');
+}
 
-// log all request
-file_put_contents('log.txt', print_r($_REQUEST, true), FILE_APPEND);
+require_once "functions.php";
 
 if (!isset($_GET['file'])) {
     header('Content-Type: application/xml');
@@ -11,20 +12,14 @@ if (!isset($_GET['file'])) {
 }
 
 $file = $_GET['file'];
+file_put_contents('log.txt', '[' . date('Y-m-d H:i:s') . '] ' . $file . PHP_EOL, FILE_APPEND);
 
-// if file name start with latest
+if ($file === 'favicon.ico') return false;
+
 if (strpos(mb_strtolower($file), 'latest') !== false) {
     echo getLatestReleaseFile($file);
     die();
 }
 
-// 106.0.5249.61/chromedriver_win32.zip
-$fileName = str_replace(['.', '/'], ['_', '-'], $file);
-
-if (!file_exists($fileName)) {
-    $file = file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
-    file_put_contents($fileName, $file);
-}
-
 header('Content-Type: application/zip');
-echo file_get_contents($fileName);
+echo getZip($file);
