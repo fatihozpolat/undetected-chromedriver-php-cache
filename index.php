@@ -7,7 +7,7 @@ require_once "functions.php";
 
 if (!isset($_GET['file'])) {
     header('Content-Type: application/xml');
-    echo getXmlFile('google.xml');
+    echo getXmlFile();
     die();
 }
 

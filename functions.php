@@ -2,28 +2,14 @@
 
 const ONE_HOUR = 3600;
 
-function getXmlFile($file): string
+function getXmlFile(): string
 {
-    $filePath = __DIR__ . '/files/' . $file;
-
-    if (!file_exists($filePath)) {
-        $xmlRes = file_get_contents('https://chromedriver.storage.googleapis.com/');
-        file_put_contents($filePath, $xmlRes);
-        return $xmlRes;
-    }
-
-    if (time() - filemtime($filePath) > ONE_HOUR) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/');
-        file_put_contents($filePath, $res);
-        return $res;
-    }
-
-    return file_get_contents($filePath);
+    return file_get_contents('https://chromedriver.storage.googleapis.com/');
 }
 
 function getLatestReleaseFile($file): string
 {
-    return getFile($file);
+    return file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
 }
 
 function getZip($file): string
@@ -42,10 +28,7 @@ function getFile($fileName, $orjFileName = null)
         file_put_contents($filePath, $res);
     }
 
-    if (str_contains($filePath, 'zip') && time() - filemtime($filePath) > ONE_HOUR) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
-        file_put_contents($filePath, $res);
-    } else {
+    if (filemtime($filePath) > ONE_HOUR) {
         $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
     }
