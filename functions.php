@@ -42,7 +42,10 @@ function getFile($fileName, $orjFileName = null)
         file_put_contents($filePath, $res);
     }
 
-    if (time() - filemtime($filePath) > ONE_HOUR) {
+    if (str_contains($filePath, 'zip') && time() - filemtime($filePath) > ONE_HOUR) {
+        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
+        file_put_contents($filePath, $res);
+    } else {
         $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
     }
