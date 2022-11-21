@@ -9,7 +9,14 @@ function getXmlFile(): string
 
 function getLatestReleaseFile($file): string
 {
-    return file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
+    $filePath = __DIR__ . '/files/' . $file;
+    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_HOUR) {
+        return file_get_contents($filePath);
+    }
+    
+    $content = file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
+    file_put_contents($filePath, $content);
+    return $content;
 }
 
 function getZip($file): string
