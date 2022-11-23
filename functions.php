@@ -1,6 +1,7 @@
 <?php
 
 const ONE_HOUR = 3600;
+const ONE_DAY = 86400;
 
 function getXmlFile(): string
 {
@@ -10,10 +11,10 @@ function getXmlFile(): string
 function getLatestReleaseFile($file): string
 {
     $filePath = __DIR__ . '/files/' . $file;
-    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_HOUR) {
+    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_DAY) {
         return file_get_contents($filePath);
     }
-    
+
     $content = file_get_contents('https://chromedriver.storage.googleapis.com/' . $file);
     file_put_contents($filePath, $content);
     return $content;
@@ -35,7 +36,7 @@ function getFile($fileName, $orjFileName = null)
         file_put_contents($filePath, $res);
     }
 
-    if (filemtime($filePath) > ONE_HOUR) {
+    if (filemtime($filePath) > ONE_DAY) {
         $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
     }
