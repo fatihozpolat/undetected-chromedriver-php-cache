@@ -11,7 +11,7 @@ function getXmlFile(): string
 function getLatestReleaseFile($file): string
 {
     $filePath = __DIR__ . '/files/' . $file;
-    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_DAY) {
+    if (file_exists($filePath) && time() - filemtime($filePath) > ONE_DAY) {
         return file_get_contents($filePath);
     }
 
@@ -36,7 +36,7 @@ function getFile($fileName, $orjFileName = null)
         file_put_contents($filePath, $res);
     }
 
-    if (filemtime($filePath) > ONE_DAY) {
+    if (time() - filemtime($filePath) > ONE_DAY) {
         $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
         file_put_contents($filePath, $res);
     }
