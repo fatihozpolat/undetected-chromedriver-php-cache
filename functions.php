@@ -11,7 +11,7 @@ function getXmlFile(): string
 function getLatestReleaseFile($file): string
 {
     $filePath = __DIR__ . '/files/' . $file;
-    if (file_exists($filePath) && time() - filemtime($filePath) > ONE_DAY) {
+    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_DAY) {
         return file_get_contents($filePath);
     }
 
@@ -28,22 +28,17 @@ function getZip($file): string
 
 function getFile($fileName, $orjFileName = null)
 {
+    header('Content-Type: application/zip');
     $orjFileName = $orjFileName ?? $fileName;
     $filePath = __DIR__ . '/files/' . $fileName;
 
-    if (!file_exists($filePath)) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
-        file_put_contents($filePath, $res);
+    if (file_exists($filePath) && time() - filemtime($filePath) < ONE_DAY) {
+        return file_get_contents($filePath);
     }
 
-    if (time() - filemtime($filePath) > ONE_DAY) {
-        $res = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
-        file_put_contents($filePath, $res);
-    }
-
-    if (str_contains($fileName, 'zip'))
-        header('Content-Type: application/zip');
-    return file_get_contents($filePath);
+    $content = file_get_contents('https://chromedriver.storage.googleapis.com/' . $orjFileName);
+    file_put_contents($filePath, $content);
+    return $content;
 }
 
 
